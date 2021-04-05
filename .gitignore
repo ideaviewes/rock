@@ -1,3 +1,5 @@
 # Project exclude paths
 /rock-admin-service/target/
 /rock-common/target/
+.idea
+rock.iml
