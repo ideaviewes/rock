@@ -1,0 +1,26 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    type: com.zaxxer.hikari.HikariDataSource
+    url: jdbc:mysql://localhost:3306/cactus?useSSL=false&charsetEncoding=UTF-8&serverTimezone=Asia/Shanghai
+    username: root
+    password: 123456
+  freemarker:
+    suffix: .html
+  jackson:
+    property-naming-strategy: com.fasterxml.jackson.databind.PropertyNamingStrategy.SnakeCaseStrategy
+    time-zone: GMT+8
+
+
+server:
+  port: 8082
+
+mybatis-plus:
+  mapper-locations: classpath:mapper/*.xml
+  global-config:
+    db-config:
+      id-type: auto
+
+jwt:
+  header: Authorization
+  secret: aabbccdd
