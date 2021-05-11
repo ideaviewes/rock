@@ -26,7 +26,7 @@ public class Knife4jConfigure {
                 .apiInfo(adminApiInfo())
                 .groupName("管理后台接口")
                 .select()
-                .apis(RequestHandlerSelectors.basePackage("com.icodeview.cactus.admin.controller"))
+                .apis(RequestHandlerSelectors.basePackage("com.icodeview.rock.admin.controller"))
                 .paths(PathSelectors.any())
                 .build().securityContexts(Lists.newArrayList(
                         securityContext()

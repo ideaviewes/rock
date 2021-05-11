@@ -22,7 +22,7 @@ public class SecurityAccessDeniedHandler implements AccessDeniedHandler {
         result.put("code",403);
         result.put("msg","您没有权限访问该资源！");
         String content = objectMapper.writeValueAsString(result);
-        response.addHeader("content-type","application/json;charset=utf-8");
+        response.addHeader("Content-Type","application/json;charset=utf-8");
         response.getWriter().write(content);
     }
 }

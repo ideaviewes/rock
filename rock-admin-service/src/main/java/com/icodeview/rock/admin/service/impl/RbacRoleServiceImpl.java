@@ -2,11 +2,12 @@ package com.icodeview.rock.admin.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.icodeview.rock.admin.dto.RoleDto;
+import com.icodeview.rock.admin.dto.RbacRoleDto;
+import com.icodeview.rock.admin.mapper.RbacRoleMapper;
+import com.icodeview.rock.admin.pojo.RbacPermission;
 import com.icodeview.rock.admin.pojo.RbacRole;
 import com.icodeview.rock.admin.pojo.RbacUserRole;
 import com.icodeview.rock.admin.service.RbacRoleService;
-import com.icodeview.rock.admin.mapper.RbacRoleMapper;
 import com.icodeview.rock.admin.service.RbacUserRoleService;
 import com.icodeview.rock.exception.BadHttpRequestException;
 import org.springframework.stereotype.Service;
@@ -24,6 +25,8 @@ import java.util.stream.Collectors;
 public class RbacRoleServiceImpl extends ServiceImpl<RbacRoleMapper, RbacRole>
         implements RbacRoleService{
     @Resource
+    private RbacRoleMapper rbacRoleMapper;
+    @Resource
     private RbacUserRoleService rbacUserRoleService;
     @Override
     public List<String> getRoleByIds(List<Integer> roleIds) {
@@ -34,13 +37,13 @@ public class RbacRoleServiceImpl extends ServiceImpl<RbacRoleMapper, RbacRole>
     }
 
     @Override
-    public void createRole(RoleDto dto) {
+    public void createRole(RbacRoleDto dto) {
         RbacRole rbacRole = BeanUtil.copyProperties(dto, RbacRole.class);
         save(rbacRole);
     }
 
     @Override
-    public void updateRole(RoleDto dto) {
+    public void updateRole(RbacRoleDto dto) {
         if(dto.getId()==null || dto.getId()==0){
             throw new BadHttpRequestException("请填写角色id！");
         }
@@ -61,8 +64,9 @@ public class RbacRoleServiceImpl extends ServiceImpl<RbacRoleMapper, RbacRole>
 
     @Override
     public List<RbacRole> getIndex() {
-        return lambdaQuery().orderByDesc(RbacRole::getId).list();
+        return lambdaQuery().orderByAsc(RbacRole::getId).list();
     }
+
 }
 
 

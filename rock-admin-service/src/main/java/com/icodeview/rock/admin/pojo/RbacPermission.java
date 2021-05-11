@@ -5,6 +5,8 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.List;
+
 import lombok.Data;
 
 /**
@@ -45,6 +47,9 @@ public class RbacPermission implements Serializable {
      */
     private Integer priority;
 
+    private Integer hideInMenu;
+    private Integer hideChildrenInMenu;
+
     /**
      * 
      */
@@ -57,4 +62,10 @@ public class RbacPermission implements Serializable {
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
+    @TableField(exist = false)
+    private List<RbacPermission> children;
+    @TableField(exist = false)
+    private List<String> parentKeys;
+    @TableField(exist = false)
+    private Boolean checked;
 }

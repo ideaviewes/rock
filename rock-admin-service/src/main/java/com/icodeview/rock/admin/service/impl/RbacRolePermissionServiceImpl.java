@@ -7,7 +7,9 @@ import com.icodeview.rock.admin.mapper.RbacRolePermissionMapper;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  *
@@ -20,6 +22,16 @@ public class RbacRolePermissionServiceImpl extends ServiceImpl<RbacRolePermissio
     @Override
     public List<String> getPermissionByRoleIds(List<Integer> roleIds) {
         return rbacRolePermissionMapper.getPermissionUrl(roleIds);
+    }
+
+    @Override
+    public List<Integer> getPermissionIdsByRoleIds(List<Integer> roleIds) {
+        if(roleIds.isEmpty()){
+            return new ArrayList<>();
+        }
+        return lambdaQuery().in(RbacRolePermission::getRoleId, roleIds)
+                .select(RbacRolePermission::getPermissionId)
+                .list().stream().mapToInt(RbacRolePermission::getPermissionId).boxed().collect(Collectors.toList());
     }
 }
 

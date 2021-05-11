@@ -1,12 +1,11 @@
 package com.icodeview.rock.admin.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.icodeview.rock.admin.pojo.RbacUser;
-import com.icodeview.rock.admin.service.RbacRolePermissionService;
-import com.icodeview.rock.admin.service.RbacRoleService;
-import com.icodeview.rock.admin.service.RbacUserRoleService;
-import com.icodeview.rock.admin.service.RbacUserService;
 import com.icodeview.rock.admin.mapper.RbacUserMapper;
+import com.icodeview.rock.admin.pojo.RbacPermission;
+import com.icodeview.rock.admin.pojo.RbacUser;
+import com.icodeview.rock.admin.service.*;
+import com.icodeview.rock.admin.vo.MenuDataItem;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -15,6 +14,10 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.security.Permission;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -30,6 +33,8 @@ public class RbacUserServiceImpl extends ServiceImpl<RbacUserMapper, RbacUser>
     private RbacRoleService rbacRoleService;
     @Resource
     private RbacRolePermissionService rbacRolePermissionService;
+    @Resource
+    private RbacPermissionService rbacPermissionService;
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         RbacUser user = lambdaQuery().eq(RbacUser::getUsername, username).one();
@@ -49,9 +54,14 @@ public class RbacUserServiceImpl extends ServiceImpl<RbacUserMapper, RbacUser>
 
         user.setAuthorities(authorityList);
 
-        UserDetails userDetails=user;
+        return user;
+    }
 
-        return userDetails;
+    @Override
+    public List<MenuDataItem> getMenuByUserId(Integer userId) {
+        List<Integer> roleIds = rbacUserRoleService.getRoleIdByUserId(userId);
+        List<Integer> permissionIds = rbacRolePermissionService.getPermissionIdsByRoleIds(roleIds);
+        return rbacPermissionService.getMenuByIds(permissionIds);
     }
 }
 
