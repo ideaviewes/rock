@@ -53,7 +53,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .exceptionHandling().accessDeniedHandler(accessDeniedHandler)
                 .and()
                 .authorizeRequests()
-                    .antMatchers("/login/account").permitAll()
+                    .antMatchers("/login/account","/rbac/user/current").permitAll()
                     .anyRequest().access("@rbacService.hasPermission(request,authentication)")
                 .and()
                     .sessionManagement()
