@@ -2,6 +2,7 @@ package com.icodeview.rock.admin.controller.rabc;
 
 import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
 import com.github.xiaoymin.knife4j.annotations.ApiSort;
+import com.icodeview.rock.admin.dto.RbacPermissionRoleAuthDto;
 import com.icodeview.rock.admin.dto.RbacRoleDto;
 import com.icodeview.rock.admin.pojo.RbacRole;
 import com.icodeview.rock.admin.service.RbacRoleService;
@@ -54,5 +55,24 @@ public class RoleController {
     public CommonResult delete(@RequestParam(value = "id") Long id){
         rbacRoleService.deleteRole(id);
         return CommonResult.success("删除成功！");
+    }
+
+    @ApiOperationSupport(order = 5)
+    @ApiOperation("分配权限")
+    @PostMapping("auth/permission")
+    public CommonResult authPermission(@RequestBody @Validated RbacPermissionRoleAuthDto dto){
+        rbacRoleService.authPermission(dto);
+        return CommonResult.success("分配成功！");
+    }
+
+    @ApiOperationSupport(order = 6)
+    @ApiOperation("权限id")
+    @GetMapping("permission/ids")
+    @ApiImplicitParam(value = "角色id",name = "role_id",required = true)
+    public CommonResult<List<Integer>> permissionIds(
+            @RequestParam(value = "role_id") Integer roleId
+    ){
+        List<Integer> result = rbacRoleService.getPermissionIdsByRoleId(roleId);
+        return CommonResult.success(result);
     }
 }

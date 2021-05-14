@@ -22,6 +22,23 @@ public class RbacUserRoleServiceImpl extends ServiceImpl<RbacUserRoleMapper, Rba
                 .list()
                 .stream().mapToInt(RbacUserRole::getRoleId).boxed().collect(Collectors.toList());
     }
+
+    @Override
+    public void attachRole(Integer userId, Integer roleId) {
+        lambdaUpdate().eq(RbacUserRole::getUserId,userId)
+                .eq(RbacUserRole::getRoleId,roleId)
+                .remove();
+        RbacUserRole userRole = new RbacUserRole();
+        userRole.setRoleId(roleId);
+        userRole.setUserId(userId);
+        save(userRole);
+    }
+
+    @Override
+    public void detachRole(Integer userId) {
+        lambdaUpdate().eq(RbacUserRole::getUserId,userId)
+                .remove();
+    }
 }
 
 

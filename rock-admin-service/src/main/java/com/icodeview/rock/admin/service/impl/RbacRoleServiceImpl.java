@@ -2,11 +2,14 @@ package com.icodeview.rock.admin.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.icodeview.rock.admin.dto.RbacPermissionRoleAuthDto;
 import com.icodeview.rock.admin.dto.RbacRoleDto;
 import com.icodeview.rock.admin.mapper.RbacRoleMapper;
 import com.icodeview.rock.admin.pojo.RbacPermission;
 import com.icodeview.rock.admin.pojo.RbacRole;
+import com.icodeview.rock.admin.pojo.RbacRolePermission;
 import com.icodeview.rock.admin.pojo.RbacUserRole;
+import com.icodeview.rock.admin.service.RbacRolePermissionService;
 import com.icodeview.rock.admin.service.RbacRoleService;
 import com.icodeview.rock.admin.service.RbacUserRoleService;
 import com.icodeview.rock.exception.BadHttpRequestException;
@@ -15,6 +18,8 @@ import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -28,6 +33,8 @@ public class RbacRoleServiceImpl extends ServiceImpl<RbacRoleMapper, RbacRole>
     private RbacRoleMapper rbacRoleMapper;
     @Resource
     private RbacUserRoleService rbacUserRoleService;
+    @Resource
+    private RbacRolePermissionService rbacRolePermissionService;
     @Override
     public List<String> getRoleByIds(List<Integer> roleIds) {
         return lambdaQuery().in(roleIds != null && !roleIds.isEmpty(), RbacRole::getId,roleIds)
@@ -67,6 +74,30 @@ public class RbacRoleServiceImpl extends ServiceImpl<RbacRoleMapper, RbacRole>
         return lambdaQuery().orderByAsc(RbacRole::getId).list();
     }
 
+    @Override
+    @Transactional(isolation = Isolation.READ_COMMITTED)
+    public void authPermission(RbacPermissionRoleAuthDto dto) {
+        Integer roleId = dto.getRoleId();
+        List<Integer> permissionIds = dto.getPermissionIds();
+        if(permissionIds.isEmpty()){
+            throw new BadHttpRequestException("请选择要分配的权限！");
+        }
+        rbacRolePermissionService.lambdaUpdate().eq(RbacRolePermission::getRoleId,dto.getRoleId())
+                .remove();
+        ArrayList<RbacRolePermission> rbacRolePermissions = new ArrayList<>();
+        permissionIds.forEach(permissionId->{
+            RbacRolePermission rbacRolePermission = new RbacRolePermission();
+            rbacRolePermission.setRoleId(roleId);
+            rbacRolePermission.setPermissionId(permissionId);
+            rbacRolePermissions.add(rbacRolePermission);
+        });
+        rbacRolePermissionService.saveBatch(rbacRolePermissions);
+    }
+
+    @Override
+    public List<Integer> getPermissionIdsByRoleId(Integer roleId) {
+         return rbacRolePermissionService.getPermissionIdsByRoleIds(Collections.singletonList(roleId));
+    }
 }
 
 

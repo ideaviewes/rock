@@ -1,6 +1,7 @@
 package com.icodeview.rock.admin.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.icodeview.rock.admin.dto.RbacPermissionRoleAuthDto;
 import com.icodeview.rock.admin.dto.RbacRoleDto;
 import com.icodeview.rock.admin.pojo.RbacPermission;
 import com.icodeview.rock.admin.pojo.RbacRole;
@@ -16,4 +17,6 @@ public interface RbacRoleService extends IService<RbacRole> {
     void updateRole(RbacRoleDto dto);
     void deleteRole(Long id);
     List<RbacRole> getIndex();
+    void authPermission(RbacPermissionRoleAuthDto dto);
+    List<Integer> getPermissionIdsByRoleId(Integer roleId);
 }

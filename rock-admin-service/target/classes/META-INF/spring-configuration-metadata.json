@@ -1,0 +1,22 @@
+{
+  "groups": [
+    {
+      "name": "jwt",
+      "type": "com.icodeview.rock.admin.security.JwtTokenUtil",
+      "sourceType": "com.icodeview.rock.admin.security.JwtTokenUtil"
+    }
+  ],
+  "properties": [
+    {
+      "name": "jwt.header",
+      "type": "java.lang.String",
+      "sourceType": "com.icodeview.rock.admin.security.JwtTokenUtil"
+    },
+    {
+      "name": "jwt.secret",
+      "type": "java.lang.String",
+      "sourceType": "com.icodeview.rock.admin.security.JwtTokenUtil"
+    }
+  ],
+  "hints": []
+}

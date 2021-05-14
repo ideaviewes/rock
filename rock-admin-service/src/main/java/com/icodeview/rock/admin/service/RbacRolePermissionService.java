@@ -1,8 +1,8 @@
 package com.icodeview.rock.admin.service;
 
-import com.icodeview.rock.admin.pojo.RbacPermission;
-import com.icodeview.rock.admin.pojo.RbacRolePermission;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.icodeview.rock.admin.dto.RbacPermissionRoleAuthDto;
+import com.icodeview.rock.admin.pojo.RbacRolePermission;
 
 import java.util.List;
 

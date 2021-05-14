@@ -4,16 +4,21 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
 import com.github.xiaoymin.knife4j.annotations.ApiSort;
+import com.icodeview.rock.admin.dto.RbacUserDto;
+import com.icodeview.rock.admin.dto.StatusDto;
 import com.icodeview.rock.admin.pojo.RbacUser;
 import com.icodeview.rock.admin.service.RbacUserService;
 import com.icodeview.rock.admin.vo.MenuDataItem;
+import com.icodeview.rock.admin.vo.RbacUserVo;
 import com.icodeview.rock.vo.CommonResult;
+import com.icodeview.rock.vo.PageResult;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
 import javax.annotation.Resource;
@@ -47,5 +52,59 @@ public class UserController {
         String content = objectMapper.writeValueAsString(result);
         response.addHeader("Content-Type","application/json;charset=utf-8");
         response.getWriter().write(content);
+    }
+
+    @ApiOperationSupport(order = 3,author = "781613629@qq.com")
+    @ApiOperation("添加用户")
+    @PostMapping("create")
+    public CommonResult create(@RequestBody @Validated RbacUserDto dto){
+        rbacUserService.createUser(dto);
+        return CommonResult.success("添加成功！");
+    }
+
+    @ApiOperationSupport(order = 4,author = "781613629@qq.com")
+    @ApiOperation("编辑用户")
+    @PostMapping("update")
+    public CommonResult update(@RequestBody @Validated RbacUserDto dto){
+        rbacUserService.updateUser(dto);
+        return CommonResult.success("添加成功！");
+    }
+    @ApiOperationSupport(order = 5,author = "781613629@qq.com")
+    @ApiOperation("删除用户")
+    @GetMapping("delete")
+    @ApiImplicitParam(value = "用户id",name = "id",required = true)
+    public CommonResult delete(@RequestParam(value = "id") Integer id){
+        rbacUserService.deleteUser(id);
+        return CommonResult.success("删除成功！");
+    }
+
+    @ApiOperationSupport(order = 6,author = "781613629@qq.com")
+    @ApiOperation("用户状态")
+    @PostMapping("status")
+    public CommonResult status(@RequestBody @Validated StatusDto dto){
+        rbacUserService.setUserStatus(dto);
+        return CommonResult.success("修改成功！");
+    }
+
+    @ApiOperation("用户列表")
+    @ApiOperationSupport(order = 7,author = "781613629@qq.com")
+    @GetMapping("index")
+/*    @ApiImplicitParams({
+            @ApiImplicitParam(value = "用户名称",name = "username"),
+            @ApiImplicitParam(value = "手机号",name = "mobile"),
+            @ApiImplicitParam(value = "用户状态",name = "status"),
+            @ApiImplicitParam(value = "页码",name = "current"),
+            @ApiImplicitParam(value = "条数",name = "page_size")
+    })*/
+
+    public CommonResult<PageResult<RbacUserVo>> index(
+            @RequestParam(value = "username",required = false) String username,
+            @RequestParam(value = "mobile",required = false) String mobile,
+            @RequestParam(value = "status",required = false) Integer status,
+            @RequestParam(value = "current",required = false,defaultValue = "1") Long pageNum,
+            @RequestParam(value = "pageSize",required = false,defaultValue = "20") Long pageSize
+    ){
+        PageResult<RbacUserVo> result = rbacUserService.getIndex(username, mobile, status, pageNum, pageSize);
+        return CommonResult.success(result);
     }
 }

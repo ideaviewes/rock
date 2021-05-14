@@ -1,10 +1,14 @@
 package com.icodeview.rock.admin.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.icodeview.rock.admin.dto.RbacPermissionRoleAuthDto;
 import com.icodeview.rock.admin.pojo.RbacRolePermission;
 import com.icodeview.rock.admin.service.RbacRolePermissionService;
 import com.icodeview.rock.admin.mapper.RbacRolePermissionMapper;
+import com.icodeview.rock.exception.BadHttpRequestException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;

@@ -9,5 +9,7 @@ import java.util.List;
  *
  */
 public interface RbacUserRoleService extends IService<RbacUserRole> {
-    public List<Integer> getRoleIdByUserId(Integer userId);
+    List<Integer> getRoleIdByUserId(Integer userId);
+    void attachRole(Integer userId,Integer roleId);
+    void detachRole(Integer userId);
 }
