@@ -5,6 +5,7 @@ import com.icodeview.rock.admin.pojo.RbacUserRole;
 import com.icodeview.rock.admin.service.RbacUserRoleService;
 import com.icodeview.rock.admin.mapper.RbacUserRoleMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -24,9 +25,9 @@ public class RbacUserRoleServiceImpl extends ServiceImpl<RbacUserRoleMapper, Rba
     }
 
     @Override
+    @Transactional
     public void attachRole(Integer userId, Integer roleId) {
         lambdaUpdate().eq(RbacUserRole::getUserId,userId)
-                .eq(RbacUserRole::getRoleId,roleId)
                 .remove();
         RbacUserRole userRole = new RbacUserRole();
         userRole.setRoleId(roleId);
