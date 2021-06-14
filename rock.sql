@@ -11,7 +11,7 @@
  Target Server Version : 50726
  File Encoding         : 65001
 
- Date: 14/06/2021 21:02:19
+ Date: 14/06/2021 21:18:23
 */
 
 SET NAMES utf8mb4;
@@ -33,7 +33,7 @@ CREATE TABLE `rbac_permission`  (
   `created_at` datetime(0) NULL DEFAULT NULL,
   `updated_at` datetime(0) NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = MyISAM AUTO_INCREMENT = 36 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 36 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of rbac_permission
@@ -41,12 +41,12 @@ CREATE TABLE `rbac_permission`  (
 INSERT INTO `rbac_permission` VALUES (1, 0, '权限管理', 'icon-quanxian', '/rbac', 2, 2, 0, NULL, NULL);
 INSERT INTO `rbac_permission` VALUES (2, 1, '角色管理', NULL, '/rbac/role/index', 2, 2, 0, NULL, NULL);
 INSERT INTO `rbac_permission` VALUES (3, 1, '用户管理', NULL, '/rbac/user/index', 2, 2, 0, NULL, NULL);
-INSERT INTO `rbac_permission` VALUES (21, 10, '添加资源', NULL, '/rbac/permission/create', 1, 2, 0, NULL, NULL);
-INSERT INTO `rbac_permission` VALUES (14, 10, '删除资源', NULL, '/rbac/permission/delete', 1, 2, 0, NULL, NULL);
 INSERT INTO `rbac_permission` VALUES (7, 2, '添加角色', NULL, '/rbac/role/create', 1, 2, 0, NULL, NULL);
 INSERT INTO `rbac_permission` VALUES (8, 2, '删除角色', NULL, '/rbac/role/delete', 1, 2, 0, NULL, NULL);
 INSERT INTO `rbac_permission` VALUES (9, 2, '编辑角色', NULL, '/rbac/role/update', 1, 2, 0, NULL, NULL);
 INSERT INTO `rbac_permission` VALUES (10, 1, '资源管理', NULL, '/rbac/permission/index', 2, 2, 0, NULL, NULL);
+INSERT INTO `rbac_permission` VALUES (14, 10, '删除资源', NULL, '/rbac/permission/delete', 1, 2, 0, NULL, NULL);
+INSERT INTO `rbac_permission` VALUES (21, 10, '添加资源', NULL, '/rbac/permission/create', 1, 2, 0, NULL, NULL);
 INSERT INTO `rbac_permission` VALUES (27, 10, '更新权限', NULL, '/rbac/permission/update', 1, 2, 0, NULL, NULL);
 INSERT INTO `rbac_permission` VALUES (28, 2, '权限列表', '', '/rbac/role/permission/index', 1, 2, 2, '2021-04-11 09:12:15', '2021-05-14 11:21:11');
 INSERT INTO `rbac_permission` VALUES (30, 2, '权限分配', NULL, '/rbac/role/auth/permission', 1, 1, 0, '2021-05-14 11:20:38', NULL);
@@ -66,7 +66,7 @@ CREATE TABLE `rbac_role`  (
   `code` varchar(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL,
   `remark` varchar(512) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = MyISAM AUTO_INCREMENT = 10 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 10 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of rbac_role
@@ -84,32 +84,32 @@ CREATE TABLE `rbac_role_permission`  (
   `permission_id` int(10) NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `role_id,permission_id`(`role_id`, `permission_id`) USING BTREE
-) ENGINE = MyISAM AUTO_INCREMENT = 330 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin ROW_FORMAT = Fixed;
+) ENGINE = InnoDB AUTO_INCREMENT = 330 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of rbac_role_permission
 -- ----------------------------
+INSERT INTO `rbac_role_permission` VALUES (313, 1, 1);
+INSERT INTO `rbac_role_permission` VALUES (314, 1, 2);
+INSERT INTO `rbac_role_permission` VALUES (329, 1, 3);
+INSERT INTO `rbac_role_permission` VALUES (315, 1, 7);
+INSERT INTO `rbac_role_permission` VALUES (316, 1, 8);
+INSERT INTO `rbac_role_permission` VALUES (317, 1, 9);
+INSERT INTO `rbac_role_permission` VALUES (318, 1, 10);
+INSERT INTO `rbac_role_permission` VALUES (319, 1, 14);
+INSERT INTO `rbac_role_permission` VALUES (320, 1, 21);
+INSERT INTO `rbac_role_permission` VALUES (321, 1, 27);
+INSERT INTO `rbac_role_permission` VALUES (322, 1, 28);
+INSERT INTO `rbac_role_permission` VALUES (323, 1, 30);
+INSERT INTO `rbac_role_permission` VALUES (324, 1, 31);
+INSERT INTO `rbac_role_permission` VALUES (325, 1, 32);
+INSERT INTO `rbac_role_permission` VALUES (326, 1, 33);
+INSERT INTO `rbac_role_permission` VALUES (327, 1, 34);
+INSERT INTO `rbac_role_permission` VALUES (328, 1, 35);
 INSERT INTO `rbac_role_permission` VALUES (293, 4, 1);
 INSERT INTO `rbac_role_permission` VALUES (294, 4, 2);
 INSERT INTO `rbac_role_permission` VALUES (295, 4, 28);
 INSERT INTO `rbac_role_permission` VALUES (296, 4, 31);
-INSERT INTO `rbac_role_permission` VALUES (329, 1, 3);
-INSERT INTO `rbac_role_permission` VALUES (328, 1, 35);
-INSERT INTO `rbac_role_permission` VALUES (327, 1, 34);
-INSERT INTO `rbac_role_permission` VALUES (326, 1, 33);
-INSERT INTO `rbac_role_permission` VALUES (325, 1, 32);
-INSERT INTO `rbac_role_permission` VALUES (324, 1, 31);
-INSERT INTO `rbac_role_permission` VALUES (323, 1, 30);
-INSERT INTO `rbac_role_permission` VALUES (322, 1, 28);
-INSERT INTO `rbac_role_permission` VALUES (321, 1, 27);
-INSERT INTO `rbac_role_permission` VALUES (320, 1, 21);
-INSERT INTO `rbac_role_permission` VALUES (319, 1, 14);
-INSERT INTO `rbac_role_permission` VALUES (318, 1, 10);
-INSERT INTO `rbac_role_permission` VALUES (317, 1, 9);
-INSERT INTO `rbac_role_permission` VALUES (316, 1, 8);
-INSERT INTO `rbac_role_permission` VALUES (315, 1, 7);
-INSERT INTO `rbac_role_permission` VALUES (314, 1, 2);
-INSERT INTO `rbac_role_permission` VALUES (313, 1, 1);
 
 -- ----------------------------
 -- Table structure for rbac_user
@@ -127,7 +127,7 @@ CREATE TABLE `rbac_user`  (
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `username_idx`(`username`) USING BTREE,
   UNIQUE INDEX `mobile_idx`(`mobile`) USING BTREE
-) ENGINE = MyISAM AUTO_INCREMENT = 5 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 5 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of rbac_user
@@ -147,7 +147,7 @@ CREATE TABLE `rbac_user_action_log`  (
   `ip` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL,
   `created_at` datetime(0) NULL DEFAULT NULL,
   PRIMARY KEY (` id`) USING BTREE
-) ENGINE = MyISAM AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for rbac_user_role
@@ -159,7 +159,7 @@ CREATE TABLE `rbac_user_role`  (
   `role_id` int(10) NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `user_id,role_id`(`user_id`, `role_id`) USING BTREE
-) ENGINE = MyISAM AUTO_INCREMENT = 5 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin ROW_FORMAT = Fixed;
+) ENGINE = InnoDB AUTO_INCREMENT = 5 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of rbac_user_role
