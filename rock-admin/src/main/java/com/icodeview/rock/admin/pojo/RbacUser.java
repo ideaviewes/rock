@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Collection;
+import java.util.Map;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -62,6 +63,9 @@ public class RbacUser implements Serializable, UserDetails {
 
     @TableField(exist = false)
     private Collection<? extends GrantedAuthority> authorities;
+
+    @TableField(exist = false)
+    private Map<String,Boolean> access;
 
 
 

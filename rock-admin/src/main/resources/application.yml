@@ -17,7 +17,8 @@ spring:
     time-zone: GMT+8
 
 server:
-  port: 8082
+  port: 8080
+
 
 
 mybatis-plus:
@@ -25,12 +26,10 @@ mybatis-plus:
   global-config:
     db-config:
       id-type: auto
-  configuration:
-    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 
 jwt:
   header: Authorization
-  secret: aabbccdd
+  secret: 7B794694CE83D5A360E5092D40009412
 
 knife4j:
   enable: true
@@ -44,3 +43,7 @@ rocket:
       - /rbac/user/current
       - /rbac/role/permission/ids
       - /rbac/user/menu
+      - /rbac/permission/index
+logging:
+  level:
+    root: info

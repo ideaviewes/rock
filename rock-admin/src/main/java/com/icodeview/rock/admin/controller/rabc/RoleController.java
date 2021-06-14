@@ -34,14 +34,16 @@ public class RoleController {
         return CommonResult.success(list);
     }
 
+    @UserActionLog(value = "添加角色")
     @ApiOperationSupport(order = 2)
     @ApiOperation("添加角色")
     @PostMapping("create")
-    public CommonResult create(@RequestBody @Validated RbacRoleDto dto){
-        rbacRoleService.createRole(dto);
-        return CommonResult.success("添加成功！");
+    public CommonResult<Integer> create(@RequestBody @Validated RbacRoleDto dto){
+        Integer roleId = rbacRoleService.createRole(dto);
+        return CommonResult.success("添加成功！",roleId);
     }
 
+    @UserActionLog(value = "编辑角色",item = "#dto.id")
     @ApiOperationSupport(order = 3)
     @ApiOperation("更新角色")
     @PostMapping("update")

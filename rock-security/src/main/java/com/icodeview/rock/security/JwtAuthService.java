@@ -1,6 +1,8 @@
 package com.icodeview.rock.security;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.icodeview.rock.exception.BadHttpRequestException;
+import com.nimbusds.jose.JOSEException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -21,7 +23,7 @@ public class JwtAuthService {
     @Resource
     private JwtTokenUtil jwtTokenUtil;
 
-    public String login(String username, String password){
+    public String login(String username, String password) throws JsonProcessingException, JOSEException {
         try{
             //使用用户名密码进行登录验证
             UsernamePasswordAuthenticationToken token =
@@ -34,12 +36,5 @@ public class JwtAuthService {
         //生成JWT
         UserDetails userDetails = userDetailsService.loadUserByUsername( username );
         return jwtTokenUtil.generateToken(userDetails);
-    }
-
-    public String refreshToken(String oldToken) {
-        if (!jwtTokenUtil.isTokenExpired(oldToken)) {
-            return jwtTokenUtil.refreshToken(oldToken);
-        }
-        return null;
     }
 }

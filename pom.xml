@@ -28,7 +28,7 @@
         <mysql.version>8.0.22</mysql.version>
         <hutool.version>5.5.2</hutool.version>
         <knife4j.version>3.0.2</knife4j.version>
-        <jwt.version>0.9.0</jwt.version>
+        <nimbus-jose-jwt.version>9.10</nimbus-jose-jwt.version>
     </properties>
     <dependencyManagement>
         <dependencies>
@@ -58,10 +58,11 @@
                 <artifactId>knife4j-spring-boot-starter</artifactId>
                 <version>${knife4j.version}</version>
             </dependency>
+            <!-- https://mvnrepository.com/artifact/com.nimbusds/nimbus-jose-jwt -->
             <dependency>
-                <groupId>io.jsonwebtoken</groupId>
-                <artifactId>jjwt</artifactId>
-                <version>${jwt.version}</version>
+                <groupId>com.nimbusds</groupId>
+                <artifactId>nimbus-jose-jwt</artifactId>
+                <version>${nimbus-jose-jwt.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

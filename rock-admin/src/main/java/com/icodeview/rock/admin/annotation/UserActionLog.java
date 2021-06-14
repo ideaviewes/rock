@@ -7,4 +7,5 @@ import java.lang.annotation.*;
 @Documented
 public @interface UserActionLog {
     String value() default "";
+    String item() default "0";
 }

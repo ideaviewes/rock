@@ -9,6 +9,7 @@ import com.icodeview.rock.admin.pojo.RbacPermission;
 import com.icodeview.rock.admin.pojo.RbacRole;
 import com.icodeview.rock.admin.pojo.RbacRolePermission;
 import com.icodeview.rock.admin.pojo.RbacUserRole;
+import com.icodeview.rock.admin.service.RbacPermissionService;
 import com.icodeview.rock.admin.service.RbacRolePermissionService;
 import com.icodeview.rock.admin.service.RbacRoleService;
 import com.icodeview.rock.admin.service.RbacUserRoleService;
@@ -18,9 +19,9 @@ import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 /**
@@ -30,11 +31,12 @@ import java.util.stream.Collectors;
 public class RbacRoleServiceImpl extends ServiceImpl<RbacRoleMapper, RbacRole>
         implements RbacRoleService{
     @Resource
-    private RbacRoleMapper rbacRoleMapper;
-    @Resource
     private RbacUserRoleService rbacUserRoleService;
     @Resource
     private RbacRolePermissionService rbacRolePermissionService;
+    @Resource
+    private RbacPermissionService rbacPermissionService;
+
     @Override
     public List<String> getRoleByIds(List<Integer> roleIds) {
         return lambdaQuery().in(roleIds != null && !roleIds.isEmpty(), RbacRole::getId,roleIds)
@@ -44,9 +46,10 @@ public class RbacRoleServiceImpl extends ServiceImpl<RbacRoleMapper, RbacRole>
     }
 
     @Override
-    public void createRole(RbacRoleDto dto) {
+    public Integer createRole(RbacRoleDto dto) {
         RbacRole rbacRole = BeanUtil.copyProperties(dto, RbacRole.class);
         save(rbacRole);
+        return rbacRole.getId();
     }
 
     @Override
@@ -97,6 +100,34 @@ public class RbacRoleServiceImpl extends ServiceImpl<RbacRoleMapper, RbacRole>
     @Override
     public List<Integer> getPermissionIdsByRoleId(Integer roleId) {
          return rbacRolePermissionService.getPermissionIdsByRoleIds(Collections.singletonList(roleId));
+    }
+
+    @Override
+    public Map<String, Boolean> getRoleAccess(List<Integer> roleIds) {
+        HashMap<String, Boolean> result = new HashMap<>();
+        List<Integer> permissionIdsByRoleIds = rbacRolePermissionService.getPermissionIdsByRoleIds(roleIds);
+        HashSet<Integer> permissionIds = new HashSet<>(permissionIdsByRoleIds);
+        List<RbacPermission> list = rbacPermissionService.lambdaQuery().select(RbacPermission::getId,RbacPermission::getUrl).list();
+
+        list.forEach(permission -> {
+            String url=permission.getUrl().substring(1);
+            result.put(lineToHump(url),false);
+            if(permissionIds.contains(permission.getId())){
+                result.put(lineToHump(url),true);
+            }
+        });
+        return result;
+    }
+    private static final Pattern linePattern = Pattern.compile("/(\\w)");
+    private static String lineToHump(String str) {
+        str = str.toLowerCase();
+        Matcher matcher = linePattern.matcher(str);
+        StringBuffer sb = new StringBuffer();
+        while (matcher.find()) {
+            matcher.appendReplacement(sb, matcher.group(1).toUpperCase());
+        }
+        matcher.appendTail(sb);
+        return sb.toString();
     }
 }
 

@@ -30,10 +30,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.Resource;
 import java.security.Permission;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -70,6 +67,9 @@ public class RbacUserServiceImpl extends ServiceImpl<RbacUserMapper, RbacUser>
         List<GrantedAuthority> authorityList = AuthorityUtils.commaSeparatedStringToAuthorityList(String.join(",", authorities));
 
         user.setAuthorities(authorityList);
+
+        Map<String, Boolean> access = rbacRoleService.getRoleAccess(roleIds);
+        user.setAccess(access);
 
         return user;
     }
