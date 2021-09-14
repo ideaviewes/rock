@@ -1,8 +1,8 @@
 package com.icodeview.rock.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.web.access.AccessDeniedHandler;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
@@ -13,14 +13,14 @@ import java.io.IOException;
 import java.util.HashMap;
 
 @Component
-public class SecurityAccessDeniedHandler implements AccessDeniedHandler {
+public class SecurityDeniedEntryPoint implements AuthenticationEntryPoint {
     @Resource
     private ObjectMapper objectMapper;
     @Override
-    public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException e) throws IOException, ServletException {
+    public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException e) throws IOException, ServletException {
         HashMap<String, Object> result = new HashMap<>();
-        result.put("code",403);
-        result.put("msg","您没有权限访问该资源！");
+        result.put("code",401);
+        result.put("msg","您尚未登录!");
         String content = objectMapper.writeValueAsString(result);
         response.setStatus(200);
         response.addHeader("Content-Type","application/json;charset=utf-8");

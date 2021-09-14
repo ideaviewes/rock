@@ -1,4 +1,4 @@
-package com.icodeview.rock.security;
+package com.icodeview.rock.admin.security;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;

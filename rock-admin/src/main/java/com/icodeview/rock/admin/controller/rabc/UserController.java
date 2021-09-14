@@ -67,7 +67,7 @@ public class UserController {
     @PostMapping("update")
     public CommonResult update(@RequestBody @Validated RbacUserDto dto){
         rbacUserService.updateUser(dto);
-        return CommonResult.success("添加成功！");
+        return CommonResult.success("编辑成功！");
     }
     @ApiOperationSupport(order = 5,author = "781613629@qq.com")
     @ApiOperation("删除用户")

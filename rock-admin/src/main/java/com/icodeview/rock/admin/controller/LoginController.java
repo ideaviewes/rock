@@ -3,7 +3,7 @@ package com.icodeview.rock.admin.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.icodeview.rock.dto.admin.LoginDto;
 import com.icodeview.rock.exception.BadHttpRequestException;
-import com.icodeview.rock.security.JwtAuthService;
+import com.icodeview.rock.admin.security.JwtAuthService;
 import com.icodeview.rock.vo.CommonResult;
 import com.nimbusds.jose.JOSEException;
 import io.swagger.annotations.Api;

@@ -40,9 +40,10 @@ rocket:
   security:
     ignores:
       - /login/account
+    login:
       - /rbac/user/current
       - /rbac/role/permission/ids
-      - /rbac/user/menu
+      - /rbac/user/mu
       - /rbac/permission/index
 logging:
   level:

@@ -17,6 +17,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
@@ -34,8 +35,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private JwtAuthenticationTokenFilter jwtAuthenticationTokenFilter;
     @Resource
     private AccessDeniedHandler accessDeniedHandler;
+    @Resource
+    private AuthenticationEntryPoint authenticationEntryPoint;
 
     private List<String> ignores;
+    private List<String> login;
 
     @Bean(name = BeanIds.AUTHENTICATION_MANAGER)
     @Override
@@ -61,8 +65,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable()
                 .addFilterBefore(jwtAuthenticationTokenFilter,UsernamePasswordAuthenticationFilter.class)
-                .exceptionHandling().accessDeniedHandler(accessDeniedHandler)
+                .exceptionHandling().accessDeniedHandler(accessDeniedHandler).authenticationEntryPoint(authenticationEntryPoint)
                 .and()
+                .authorizeRequests(authorize->{
+                    for (String s : login) {
+                        authorize.antMatchers(s).authenticated();
+                    }
+                })
                 .authorizeRequests(authorize->{
                     for (String ignore : ignores) {
                         authorize.antMatchers(ignore).permitAll();
