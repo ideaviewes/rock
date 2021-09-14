@@ -43,7 +43,7 @@ rocket:
     login:
       - /rbac/user/current
       - /rbac/role/permission/ids
-      - /rbac/user/mu
+      - /rbac/user/menu
       - /rbac/permission/index
 logging:
   level:
