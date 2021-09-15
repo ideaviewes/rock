@@ -47,7 +47,7 @@ public class RoleController {
     @ApiOperationSupport(order = 3)
     @ApiOperation("更新角色")
     @PostMapping("update")
-    public CommonResult update(@RequestBody @Validated RbacRoleDto dto){
+    public CommonResult<Void> update(@RequestBody @Validated RbacRoleDto dto){
         rbacRoleService.updateRole(dto);
         return CommonResult.success("更新成功！");
     }
@@ -56,7 +56,7 @@ public class RoleController {
     @ApiOperation("删除角色")
     @PostMapping("delete")
     @ApiImplicitParam(value = "角色id",name = "id",required = true)
-    public CommonResult delete(@RequestParam(value = "id") Long id){
+    public CommonResult<Void> delete(@RequestParam(value = "id") Long id){
         rbacRoleService.deleteRole(id);
         return CommonResult.success("删除成功！");
     }
@@ -64,7 +64,7 @@ public class RoleController {
     @ApiOperationSupport(order = 5)
     @ApiOperation("分配权限")
     @PostMapping("auth/permission")
-    public CommonResult authPermission(@RequestBody @Validated RbacPermissionRoleAuthDto dto){
+    public CommonResult<Void> authPermission(@RequestBody @Validated RbacPermissionRoleAuthDto dto){
         rbacRoleService.authPermission(dto);
         return CommonResult.success("分配成功！");
     }

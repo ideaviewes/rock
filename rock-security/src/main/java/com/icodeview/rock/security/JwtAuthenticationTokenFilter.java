@@ -24,20 +24,20 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
     @Resource
     private JwtTokenUtil jwtTokenUtil;
     @Resource
-    private UserDetailsService userDetailsService;
+    private RockUserDetailsService rockUserDetailsService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws ServletException, IOException {
         String jwtToken = request.getHeader(jwtTokenUtil.getHeader());
         if(StrUtil.isNotBlank(jwtToken) && !request.getRequestURI().startsWith("/login/account")){
-            String username = null;
+            Long userId = null;
             try {
-                username = jwtTokenUtil.getUsernameFromToken(jwtToken);
+                userId = jwtTokenUtil.getUserIdFromToken(jwtToken);
             } catch (ParseException | JOSEException e) {
                 e.printStackTrace();
             }
-            if(StrUtil.isNotBlank(username) && SecurityContextHolder.getContext().getAuthentication()==null){
-                UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+            if(userId!=null && SecurityContextHolder.getContext().getAuthentication()==null){
+                UserDetails userDetails = rockUserDetailsService.getUserDetailsById(userId);
                 if(jwtTokenUtil.validateToken(jwtToken,userDetails)){
                     UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
                     SecurityContextHolder.getContext().setAuthentication(authenticationToken);

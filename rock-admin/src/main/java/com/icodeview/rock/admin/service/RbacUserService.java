@@ -20,6 +20,6 @@ public interface RbacUserService extends IService<RbacUser> {
     void updateUser(RbacUserDto userDto);
     void deleteUser(Integer id);
     void setUserStatus(StatusDto dto);
-
     PageResult<RbacUserVo> getIndex(String username,String mobile,Integer status,Long pageNum,Long pageSize);
+    String getHomeUrl(Integer userId);
 }

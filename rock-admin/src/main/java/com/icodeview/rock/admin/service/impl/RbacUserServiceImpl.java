@@ -16,6 +16,7 @@ import com.icodeview.rock.admin.service.*;
 import com.icodeview.rock.admin.vo.MenuDataItem;
 import com.icodeview.rock.admin.vo.RbacUserVo;
 import com.icodeview.rock.exception.BadHttpRequestException;
+import com.icodeview.rock.security.RockUserDetailsService;
 import com.icodeview.rock.vo.PageResult;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
@@ -38,7 +39,7 @@ import java.util.stream.Collectors;
  */
 @Service
 public class RbacUserServiceImpl extends ServiceImpl<RbacUserMapper, RbacUser>
-        implements RbacUserService, UserDetailsService {
+        implements RbacUserService, RockUserDetailsService {
     @Resource
     private RbacUserRoleService rbacUserRoleService;
     @Resource
@@ -51,27 +52,7 @@ public class RbacUserServiceImpl extends ServiceImpl<RbacUserMapper, RbacUser>
     private PasswordEncoder passwordEncoder;
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        RbacUser user = lambdaQuery().eq(RbacUser::getUsername, username).one();
-        if(user==null){
-            throw new UsernameNotFoundException("用户不存在！");
-        }
-        List<Integer> roleIds = rbacUserRoleService.getRoleIdByUserId(user.getId());
-
-        List<String> authorities = rbacRolePermissionService.getPermissionByRoleIds(roleIds);
-
-        List<String> roles = rbacRoleService.getRoleByIds(roleIds);
-        roles = roles.stream().map(rc -> "ROLE_" + rc).collect(Collectors.toList());
-
-        authorities.addAll(roles);
-
-        List<GrantedAuthority> authorityList = AuthorityUtils.commaSeparatedStringToAuthorityList(String.join(",", authorities));
-
-        user.setAuthorities(authorityList);
-
-        Map<String, Boolean> access = rbacRoleService.getRoleAccess(roleIds);
-        user.setAccess(access);
-
-        return user;
+        return getUserDetails(lambdaQuery().eq(RbacUser::getUsername, username));
     }
 
     @Override
@@ -113,7 +94,7 @@ public class RbacUserServiceImpl extends ServiceImpl<RbacUserMapper, RbacUser>
         }
         RbacUser user = BeanUtil.copyProperties(userDto, RbacUser.class);
         String password = userDto.getPassword();
-        if(StrUtil.isBlank(password)){
+        if(StrUtil.isNotBlank(password)){
             user.setPassword(passwordEncoder.encode(password));
         }
         user.setCreatedAt(LocalDateTime.now());
@@ -160,6 +141,15 @@ public class RbacUserServiceImpl extends ServiceImpl<RbacUserMapper, RbacUser>
         return PageResult.page(record,page);
     }
 
+    @Override
+    public String getHomeUrl(Integer userId) {
+        List<Integer> roleIds = rbacUserRoleService.getRoleIdByUserId(userId);
+        List<String> permission = rbacRolePermissionService.getPermissionByRoleIds(roleIds);
+        Optional<String> homeUrlOptional = permission.stream().filter(url -> url.contains("index")).findFirst();
+        return homeUrlOptional.orElse("/");
+    }
+
+
     private boolean checkMobile(Integer userId,String mobile){
         return checkParams(userId, lambdaQuery().eq(RbacUser::getMobile, mobile), mobile);
     }
@@ -184,6 +174,30 @@ public class RbacUserServiceImpl extends ServiceImpl<RbacUserMapper, RbacUser>
         return true;
     }
 
+    @Override
+    public UserDetails getUserDetailsById(Long id) {
+        return getUserDetails(lambdaQuery().eq(RbacUser::getId, id));
+    }
+
+    private UserDetails getUserDetails(LambdaQueryChainWrapper<RbacUser> eq) {
+        RbacUser user = eq.one();
+        if(user==null){
+            throw new UsernameNotFoundException("用户不存在！");
+        }
+        List<Integer> roleIds = rbacUserRoleService.getRoleIdByUserId(user.getId());
+        List<String> authorities = rbacRolePermissionService.getPermissionByRoleIds(roleIds);
+        List<String> roles = rbacRoleService.getRoleByIds(roleIds);
+        roles = roles.stream().map(rc -> "ROLE_" + rc).collect(Collectors.toList());
+
+        authorities.addAll(roles);
+        List<GrantedAuthority> authorityList = AuthorityUtils.commaSeparatedStringToAuthorityList(String.join(",", authorities));
+
+        user.setAuthorities(authorityList);
+
+        Map<String, Boolean> access = rbacRoleService.getRoleAccess(roleIds);
+        user.setAccess(access);
+        return user;
+    }
 }
 
 

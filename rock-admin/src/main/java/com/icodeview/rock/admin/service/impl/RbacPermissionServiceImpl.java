@@ -99,6 +99,7 @@ public class RbacPermissionServiceImpl extends ServiceImpl<RbacPermissionMapper,
                 .peek(permission -> {
                     permission.setParentKeys(Collections.singletonList(parent.getUrl()));
                 })
+                .sorted(Comparator.comparing(RbacPermission::getPriority).reversed())
                 .collect(Collectors.toList());
         if (!children.isEmpty()) {
             parent.setChildren(children);
@@ -108,10 +109,8 @@ public class RbacPermissionServiceImpl extends ServiceImpl<RbacPermissionMapper,
 
     public List<MenuDataItem> getMenuList(List<RbacPermission> permissions){
         List<MenuDataItem> list = permissions.stream().map(this::generateMenuItem).collect(Collectors.toList());
-        List<MenuDataItem> roots = list.stream().filter(item -> item.getParentId() == 0).collect(Collectors.toList());
-        List<MenuDataItem> sub = list.stream().filter(item -> item.getParentId() != 0).collect(Collectors.toList());
-
-
+        List<MenuDataItem> roots = list.stream().filter(item -> item.getParentId() == 0).sorted(Comparator.comparing(MenuDataItem::getPriority).reversed()).collect(Collectors.toList());
+        List<MenuDataItem> sub = list.stream().filter(item -> item.getParentId() != 0).sorted(Comparator.comparing(MenuDataItem::getPriority).reversed()).collect(Collectors.toList());
         roots.forEach(root->getSubMenu(root,sub));
         return roots;
     }
@@ -120,7 +119,7 @@ public class RbacPermissionServiceImpl extends ServiceImpl<RbacPermissionMapper,
         List<MenuDataItem> children = subs.stream().filter(sub -> sub.getParentId().equals(parent.getId()))
                 .peek(menuDataItem -> {
                     menuDataItem.setParentKeys(Collections.singletonList(parent.getKey()));
-                }).collect(Collectors.toList());
+                }).sorted(Comparator.comparing(MenuDataItem::getPriority).reversed()).collect(Collectors.toList());
         if(!children.isEmpty()){
             parent.setChildren(children);
             children.forEach(child->{
@@ -133,6 +132,7 @@ public class RbacPermissionServiceImpl extends ServiceImpl<RbacPermissionMapper,
         MenuDataItem item = new MenuDataItem();
         item.setId(permission.getId());
         item.setKey(permission.getUrl());
+        item.setPriority(permission.getPriority());
         item.setParentId(permission.getParentId());
         item.setName(permission.getName());
         item.setIcon(permission.getIcon());

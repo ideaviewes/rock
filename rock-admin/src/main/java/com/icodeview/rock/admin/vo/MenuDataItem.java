@@ -16,5 +16,5 @@ public class MenuDataItem {
     private Boolean hideChildrenInMenu;
     private Boolean hideInMenu;
     private List<String> parentKeys;
-
+    private Integer priority;
 }

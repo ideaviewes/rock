@@ -34,76 +34,77 @@ public class UserController {
     @Resource
     private RbacUserService rbacUserService;
 
-    @ApiOperationSupport(order = 1,author = "781613629@qq.com")
+    @ApiOperationSupport(order = 1, author = "781613629@qq.com")
     @ApiOperation("当前用户信息")
     @GetMapping("current")
-    public CommonResult<RbacUser> current(@ApiIgnore @AuthenticationPrincipal RbacUser rbacUser){
+    public CommonResult<RbacUser> current(@ApiIgnore @AuthenticationPrincipal RbacUser rbacUser) {
         return CommonResult.success(rbacUser);
     }
 
-    @ApiOperationSupport(order = 2,author = "781613629@qq.com")
+    @ApiOperationSupport(order = 2, author = "781613629@qq.com")
     @ApiOperation("当前用户菜单")
     @GetMapping("menu")
     private void menu(@ApiIgnore @AuthenticationPrincipal RbacUser user, HttpServletResponse response) throws IOException {
         Integer id = user.getId();
         List<MenuDataItem> list = rbacUserService.getMenuByUserId(id);
-        CommonResult<List<MenuDataItem>> result=CommonResult.success("获取数据成功！",list);
+        CommonResult<List<MenuDataItem>> result = CommonResult.success("获取数据成功！", list);
         ObjectMapper objectMapper = new ObjectMapper();
         String content = objectMapper.writeValueAsString(result);
-        response.addHeader("Content-Type","application/json;charset=utf-8");
+        response.addHeader("Content-Type", "application/json;charset=utf-8");
         response.getWriter().write(content);
     }
 
-    @ApiOperationSupport(order = 3,author = "781613629@qq.com")
+    @ApiOperationSupport(order = 3, author = "781613629@qq.com")
     @ApiOperation("添加用户")
     @PostMapping("create")
-    public CommonResult create(@RequestBody @Validated RbacUserDto dto){
+    public CommonResult<Void> create(@RequestBody @Validated RbacUserDto dto) {
         rbacUserService.createUser(dto);
         return CommonResult.success("添加成功！");
     }
 
-    @ApiOperationSupport(order = 4,author = "781613629@qq.com")
+    @ApiOperationSupport(order = 4, author = "781613629@qq.com")
     @ApiOperation("编辑用户")
     @PostMapping("update")
-    public CommonResult update(@RequestBody @Validated RbacUserDto dto){
+    public CommonResult<Void> update(@RequestBody @Validated RbacUserDto dto) {
         rbacUserService.updateUser(dto);
         return CommonResult.success("编辑成功！");
     }
-    @ApiOperationSupport(order = 5,author = "781613629@qq.com")
+
+    @ApiOperationSupport(order = 5, author = "781613629@qq.com")
     @ApiOperation("删除用户")
     @GetMapping("delete")
-    @ApiImplicitParam(value = "用户id",name = "id",required = true)
-    public CommonResult delete(@RequestParam(value = "id") Integer id){
+    @ApiImplicitParam(value = "用户id", name = "id", required = true)
+    public CommonResult<Void> delete(@RequestParam(value = "id") Integer id) {
         rbacUserService.deleteUser(id);
         return CommonResult.success("删除成功！");
     }
 
-    @ApiOperationSupport(order = 6,author = "781613629@qq.com")
+    @ApiOperationSupport(order = 6, author = "781613629@qq.com")
     @ApiOperation("用户状态")
     @PostMapping("status")
-    public CommonResult status(@RequestBody @Validated StatusDto dto){
+    public CommonResult<Void> status(@RequestBody @Validated StatusDto dto) {
         rbacUserService.setUserStatus(dto);
         return CommonResult.success("修改成功！");
     }
 
     @ApiOperation("用户列表")
-    @ApiOperationSupport(order = 7,author = "781613629@qq.com")
+    @ApiOperationSupport(order = 7, author = "781613629@qq.com")
     @GetMapping("index")
-/*    @ApiImplicitParams({
-            @ApiImplicitParam(value = "用户名称",name = "username"),
-            @ApiImplicitParam(value = "手机号",name = "mobile"),
-            @ApiImplicitParam(value = "用户状态",name = "status"),
-            @ApiImplicitParam(value = "页码",name = "current"),
-            @ApiImplicitParam(value = "条数",name = "page_size")
-    })*/
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "用户名称", value = "username"),
+            @ApiImplicitParam(name = "手机号", value = "mobile"),
+            @ApiImplicitParam(name = "用户状态", value = "status"),
+            @ApiImplicitParam(name = "页码", value = "current"),
+            @ApiImplicitParam(name = "条数", value = "page_size")
+    })
 
     public CommonResult<PageResult<RbacUserVo>> index(
-            @RequestParam(value = "username",required = false) String username,
-            @RequestParam(value = "mobile",required = false) String mobile,
-            @RequestParam(value = "status",required = false) Integer status,
-            @RequestParam(value = "current",required = false,defaultValue = "1") Long pageNum,
-            @RequestParam(value = "pageSize",required = false,defaultValue = "20") Long pageSize
-    ){
+            @RequestParam(value = "username", required = false) String username,
+            @RequestParam(value = "mobile", required = false) String mobile,
+            @RequestParam(value = "status", required = false) Integer status,
+            @RequestParam(value = "current", required = false, defaultValue = "1") Long pageNum,
+            @RequestParam(value = "pageSize", required = false, defaultValue = "20") Long pageSize
+    ) {
         PageResult<RbacUserVo> result = rbacUserService.getIndex(username, mobile, status, pageNum, pageSize);
         return CommonResult.success(result);
     }

@@ -1,6 +1,8 @@
 package com.icodeview.rock.admin.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.icodeview.rock.admin.service.RbacUserService;
+import com.icodeview.rock.admin.vo.LoginVo;
 import com.icodeview.rock.dto.admin.LoginDto;
 import com.icodeview.rock.exception.BadHttpRequestException;
 import com.icodeview.rock.admin.security.JwtAuthService;
@@ -22,18 +24,15 @@ import javax.annotation.Resource;
 public class LoginController {
     @Resource
     private JwtAuthService jwtAuthService;
-
     @ApiOperation(value = "用户名密码登录")
     @PostMapping("account")
-    public CommonResult<String> account(@RequestBody @Validated LoginDto dto){
-        String token=null;
+    public CommonResult<LoginVo> account(@RequestBody @Validated LoginDto dto){
         try {
-            token = jwtAuthService.login(dto.getUsername(), dto.getPassword());
-
+            LoginVo result = jwtAuthService.login(dto.getUsername(), dto.getPassword());
+            return CommonResult.success("登录成功！",result);
         } catch (JsonProcessingException | JOSEException e) {
             e.printStackTrace();
             throw new BadHttpRequestException("登录失败，请重试！");
         }
-        return CommonResult.success("登录成功！",token);
     }
 }

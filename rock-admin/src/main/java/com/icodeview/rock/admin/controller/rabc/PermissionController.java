@@ -34,7 +34,7 @@ public class PermissionController {
     @ApiOperationSupport(order = 2)
     @ApiOperation(value = "添加权限")
     @PostMapping("create")
-    public CommonResult create(@RequestBody @Validated RbacPermissionDto dto){
+    public CommonResult<Void> create(@RequestBody @Validated RbacPermissionDto dto){
         rbacPermissionService.createPermission(dto);
         return CommonResult.success("添加成功");
     }
@@ -42,7 +42,7 @@ public class PermissionController {
     @ApiOperationSupport(order = 2)
     @ApiOperation(value = "编辑权限")
     @PostMapping("update")
-    public CommonResult update(@RequestBody @Validated RbacPermissionDto dto){
+    public CommonResult<Void> update(@RequestBody @Validated RbacPermissionDto dto){
         rbacPermissionService.updatePermission(dto);
         return CommonResult.success("编辑成功");
     }
@@ -51,7 +51,7 @@ public class PermissionController {
     @ApiOperation(value = "删除权限")
     @ApiImplicitParam(value = "权限id",name = "id",required = true)
     @PostMapping("delete")
-    public CommonResult delete(@RequestParam(value = "id") Long id){
+    public CommonResult<Void> delete(@RequestParam(value = "id") Long id){
         rbacPermissionService.delete(id);
         return CommonResult.success("删除成功！");
     }

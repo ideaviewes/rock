@@ -1,6 +1,9 @@
 package com.icodeview.rock.admin.security;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.icodeview.rock.admin.pojo.RbacUser;
+import com.icodeview.rock.admin.service.RbacUserService;
+import com.icodeview.rock.admin.vo.LoginVo;
 import com.icodeview.rock.exception.BadHttpRequestException;
 import com.icodeview.rock.security.JwtTokenUtil;
 import com.nimbusds.jose.JOSEException;
@@ -18,13 +21,20 @@ import javax.annotation.Resource;
 @Component
 public class JwtAuthService {
     @Resource
-    private AuthenticationManager authenticationManager;
+    private RbacUserService rbacUserService;
     @Resource
-    private UserDetailsService userDetailsService;
+    private AuthenticationManager authenticationManager;
     @Resource
     private JwtTokenUtil jwtTokenUtil;
 
-    public String login(String username, String password) throws JsonProcessingException, JOSEException {
+    public LoginVo login(String username, String password) throws JsonProcessingException, JOSEException {
+        RbacUser rbacUser = rbacUserService.lambdaQuery().eq(RbacUser::getUsername, username)
+                .select(RbacUser::getId)
+                .last("limit 1")
+                .one();
+        if(rbacUser==null){
+            throw new BadHttpRequestException("账号密码错误！");
+        }
         try{
             //使用用户名密码进行登录验证
             UsernamePasswordAuthenticationToken token =
@@ -34,8 +44,13 @@ public class JwtAuthService {
         }catch(AuthenticationException e){
             throw new BadHttpRequestException("用户名密码错误！");
         }
+
         //生成JWT
-        UserDetails userDetails = userDetailsService.loadUserByUsername( username );
-        return jwtTokenUtil.generateToken(userDetails);
+        String token = jwtTokenUtil.generateToken(rbacUser.getId().longValue());
+        LoginVo result = new LoginVo();
+        result.setToken(token);
+        String url = rbacUserService.getHomeUrl(rbacUser.getId());
+        result.setUrl(url);
+        return result;
     }
 }

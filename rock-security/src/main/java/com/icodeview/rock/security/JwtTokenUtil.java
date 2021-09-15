@@ -28,12 +28,14 @@ public class JwtTokenUtil {
     /**
      * 生成token令牌
      *
-     * @param userDetails 用户
+     * @param userId 用户id
      * @return 令token牌
      */
-    public String generateToken(UserDetails userDetails) throws JsonProcessingException, JOSEException {
+    public String generateToken(Long userId) throws JsonProcessingException, JOSEException {
         JWSHeader header = new JWSHeader(JWSAlgorithm.HS256);
-        Payload payload = new Payload(objectMapper.writeValueAsString(userDetails));
+        HashMap<String, Long> map = new HashMap<>();
+        map.put("user_id",userId);
+        Payload payload = new Payload(objectMapper.writeValueAsString(map));
         JWSObject jwsObject = new JWSObject(header, payload);
         MACSigner signer = new MACSigner(secret);
         jwsObject.sign(signer);
@@ -41,18 +43,18 @@ public class JwtTokenUtil {
     }
 
     /**
-     * 从令牌中获取用户名
+     * 从令牌中获取用户id
      *
      * @param token 令牌
      * @return 用户名
      */
-    public String getUsernameFromToken(String token) throws ParseException, JOSEException {
+    public Long getUserIdFromToken(String token) throws ParseException, JOSEException {
         JWSObject jwsObject = JWSObject.parse(token);
         Payload payload = jwsObject.getPayload();
         MACVerifier verifier = new MACVerifier(secret);
         if(jwsObject.verify(verifier)){
             Map<String, Object> result = payload.toJSONObject();
-            return (String) result.get("username");
+            return (Long) result.get("user_id");
         }
         return null;
     }
