@@ -14,6 +14,7 @@ public class RbacPermissionDto {
     @NotBlank(message = "请填写路由")
     private String url;
     private Integer hideInMenu;
+    private Integer hideChildrenInMenu;
     private Long priority;
     private String access;
 }

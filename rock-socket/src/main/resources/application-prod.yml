@@ -1,0 +1,18 @@
+server:
+  port: 8083
+websocket:
+  port: 6300
+  path: /wss
+
+spring:
+  jackson:
+    property-naming-strategy: com.fasterxml.jackson.databind.PropertyNamingStrategy.SnakeCaseStrategy
+    time-zone: GMT+8
+
+logging:
+  level:
+    root: info
+  file:
+    max-history: 30
+    clean-history-on-start: false
+    path: /www/wwwlogs/magpie-websocket

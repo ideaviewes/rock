@@ -1,0 +1,10 @@
+server:
+  port: 8083
+websocket:
+  port: 6300
+  path: /ws
+
+spring:
+  jackson:
+    property-naming-strategy: com.fasterxml.jackson.databind.PropertyNamingStrategy.SnakeCaseStrategy
+    time-zone: GMT+8
