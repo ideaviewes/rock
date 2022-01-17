@@ -20,7 +20,7 @@ public class SecurityDeniedEntryPoint implements AuthenticationEntryPoint {
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException e) throws IOException, ServletException {
         HashMap<String, Object> result = new HashMap<>();
         result.put("code",401);
-        result.put("msg","您尚未登录!");
+        result.put("msg","请登录后继续操作!");
         String content = objectMapper.writeValueAsString(result);
         response.setStatus(200);
         response.addHeader("Content-Type","application/json;charset=utf-8");

@@ -12,6 +12,7 @@ import org.springframework.security.config.BeanIds;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -38,8 +39,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Resource
     private AuthenticationEntryPoint authenticationEntryPoint;
 
-    private List<String> ignores;
-    private List<String> login;
 
     @Bean(name = BeanIds.AUTHENTICATION_MANAGER)
     @Override
@@ -58,7 +57,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     public void configure(WebSecurity web) throws Exception {
-        web.ignoring().antMatchers("/doc.html","/webjars/**","/img.icons/**","/swagger-resources/**","/v2/api-docs");
+        web.ignoring().antMatchers("/doc.html","/webjars/**","/img.icons/**","/swagger-resources/**","/v2/api-docs","/uploads/**/**","/**/*.txt");
     }
 
     @Override
@@ -68,14 +67,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .exceptionHandling().accessDeniedHandler(accessDeniedHandler).authenticationEntryPoint(authenticationEntryPoint)
                 .and()
                 .authorizeRequests(authorize->{
-                    for (String s : login) {
-                        authorize.antMatchers(s).authenticated();
-                    }
+                    authorize.antMatchers("/login/account").permitAll();
                 })
                 .authorizeRequests(authorize->{
-                    for (String ignore : ignores) {
-                        authorize.antMatchers(ignore).permitAll();
-                    }
                     authorize.anyRequest().access("@rbacService.hasPermission(request,authentication)");
                 }).sessionManagement()
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS);

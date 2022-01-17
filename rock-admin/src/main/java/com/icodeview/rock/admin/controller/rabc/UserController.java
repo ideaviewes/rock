@@ -10,6 +10,7 @@ import com.icodeview.rock.admin.pojo.RbacUser;
 import com.icodeview.rock.admin.service.RbacUserService;
 import com.icodeview.rock.admin.vo.MenuDataItem;
 import com.icodeview.rock.admin.vo.RbacUserVo;
+import com.icodeview.rock.security.AuthorizationIgnore;
 import com.icodeview.rock.vo.CommonResult;
 import com.icodeview.rock.vo.PageResult;
 import io.swagger.annotations.Api;
@@ -34,6 +35,7 @@ public class UserController {
     @Resource
     private RbacUserService rbacUserService;
 
+    @AuthorizationIgnore
     @ApiOperationSupport(order = 1, author = "781613629@qq.com")
     @ApiOperation("当前用户信息")
     @GetMapping("current")
@@ -41,6 +43,7 @@ public class UserController {
         return CommonResult.success(rbacUser);
     }
 
+    @AuthorizationIgnore
     @ApiOperationSupport(order = 2, author = "781613629@qq.com")
     @ApiOperation("当前用户菜单")
     @GetMapping("menu")
@@ -91,11 +94,11 @@ public class UserController {
     @ApiOperationSupport(order = 7, author = "781613629@qq.com")
     @GetMapping("index")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "用户名称", value = "username"),
-            @ApiImplicitParam(name = "手机号", value = "mobile"),
-            @ApiImplicitParam(name = "用户状态", value = "status"),
-            @ApiImplicitParam(name = "页码", value = "current"),
-            @ApiImplicitParam(name = "条数", value = "page_size")
+            @ApiImplicitParam(name = "username",value = "用户名称"),
+            @ApiImplicitParam(name = "mobile",value = "手机号"),
+            @ApiImplicitParam(name = "status",value = "用户状态"),
+            @ApiImplicitParam(name = "current",value = "页码"),
+            @ApiImplicitParam(name = "pageSize",value = "条数")
     })
 
     public CommonResult<PageResult<RbacUserVo>> index(

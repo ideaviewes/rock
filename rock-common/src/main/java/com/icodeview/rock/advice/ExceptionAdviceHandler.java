@@ -12,7 +12,9 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 import java.sql.SQLIntegrityConstraintViolationException;
+import java.text.ParseException;
 import java.util.Iterator;
+import java.util.Objects;
 import java.util.Set;
 
 @RestControllerAdvice
@@ -20,13 +22,13 @@ import java.util.Set;
 public class ExceptionAdviceHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public CommonResult handlerException(MethodArgumentNotValidException exception){
+    public CommonResult<Void> handlerException(MethodArgumentNotValidException exception){
         log.error("验证错误！");
-        String message = exception.getBindingResult().getFieldError().getDefaultMessage();
+        String message = Objects.requireNonNull(exception.getBindingResult().getFieldError()).getDefaultMessage();
         return CommonResult.exception(0,message);
     }
     @ExceptionHandler(ConstraintViolationException.class)
-    public CommonResult handlerException(ConstraintViolationException exception){
+    public CommonResult<Void> handlerException(ConstraintViolationException exception){
         Set<ConstraintViolation<?>> set = exception.getConstraintViolations();
         Iterator<ConstraintViolation<?>> iterator = set.iterator();
         ConstraintViolation<?> next = iterator.next();
@@ -34,16 +36,19 @@ public class ExceptionAdviceHandler {
         return CommonResult.exception(0,message);
     }
     @ExceptionHandler(BadHttpRequestException.class)
-    public CommonResult handlerException(BadHttpRequestException exception){
+    public CommonResult<Void> handlerException(BadHttpRequestException exception){
         return CommonResult.exception(exception.getCode(),exception.getMessage());
     }
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
-    public CommonResult handlerException(MethodArgumentTypeMismatchException exception){
+    public CommonResult<Void> handlerException(MethodArgumentTypeMismatchException exception){
         return CommonResult.exception(0,exception.getName()+"格式错误！");
     }
     @ExceptionHandler(SQLIntegrityConstraintViolationException.class)
-    public CommonResult handlerException(SQLIntegrityConstraintViolationException exception){
-
+    public CommonResult<Void> handlerException(SQLIntegrityConstraintViolationException exception){
         return CommonResult.exception(0,exception.getMessage());
+    }
+    @ExceptionHandler(ParseException.class)
+    public CommonResult<Void> handlerException(ParseException exception){
+        return CommonResult.exception(401,"请登录后继续操作！");
     }
 }

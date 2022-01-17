@@ -5,6 +5,7 @@ import com.github.xiaoymin.knife4j.annotations.ApiSort;
 import com.icodeview.rock.admin.dto.RbacPermissionDto;
 import com.icodeview.rock.admin.pojo.RbacPermission;
 import com.icodeview.rock.admin.service.RbacPermissionService;
+import com.icodeview.rock.security.AuthorizationIgnore;
 import com.icodeview.rock.vo.CommonResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -23,6 +24,7 @@ public class PermissionController {
     @Resource
     private RbacPermissionService rbacPermissionService;
 
+    @AuthorizationIgnore
     @ApiOperationSupport(order = 1)
     @ApiOperation(value = "权限列表")
     @GetMapping("index")

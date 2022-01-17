@@ -1,0 +1,41 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    type: com.zaxxer.hikari.HikariDataSource
+    url: jdbc:mysql://localhost:3306/rocket-demo?useSSL=false&charsetEncoding=UTF-8&serverTimezone=Asia/Shanghai
+    username: rocket-demo
+    password: kNFNLDYbxtiTi276
+    hikari:
+      pool-name: Hikari
+      maximum-pool-size: 5
+      connection-test-query: SELECT 1
+      minimum-idle: 1
+  freemarker:
+    suffix: .html
+  jackson:
+    property-naming-strategy: com.fasterxml.jackson.databind.PropertyNamingStrategy.SnakeCaseStrategy
+    time-zone: GMT+8
+
+server:
+  port: 8080
+
+
+
+mybatis-plus:
+  mapper-locations: classpath:mapper/*.xml
+  global-config:
+    db-config:
+      id-type: auto
+
+jwt:
+  header: Authorization
+  secret: 7B794694CE83D5A360E5092D40009412
+
+knife4j:
+  enable: true
+  setting:
+    enableOpenApi: false
+
+logging:
+  level:
+    root: info

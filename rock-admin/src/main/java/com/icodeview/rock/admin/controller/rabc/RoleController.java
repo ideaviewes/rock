@@ -7,6 +7,7 @@ import com.icodeview.rock.admin.dto.RbacPermissionRoleAuthDto;
 import com.icodeview.rock.admin.dto.RbacRoleDto;
 import com.icodeview.rock.admin.pojo.RbacRole;
 import com.icodeview.rock.admin.service.RbacRoleService;
+import com.icodeview.rock.security.AuthorizationIgnore;
 import com.icodeview.rock.vo.CommonResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -69,6 +70,7 @@ public class RoleController {
         return CommonResult.success("分配成功！");
     }
 
+    @AuthorizationIgnore
     @ApiOperationSupport(order = 6)
     @ApiOperation("权限id")
     @GetMapping("permission/ids")
