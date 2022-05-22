@@ -27,7 +27,7 @@ import java.util.Map;
 public class LoginController {
     @Resource
     private JwtAuthService jwtAuthService;
-
+    @PermitAll
     @ApiOperation(value = "用户名密码登录")
     @PostMapping("account")
     public CommonResult<LoginVo> account(@RequestBody @Validated LoginDto dto){
@@ -38,14 +38,5 @@ public class LoginController {
             e.printStackTrace();
             throw new BadHttpRequestException("登录失败，请重试！");
         }
-    }
-    @PermitAll
-    @AuthorizationIgnore
-    @GetMapping("/test")
-    public CommonResult<Map<String,Object>> test(@AuthenticationPrincipal RbacUser user){
-        HashMap<String, Object> map = new HashMap<>();
-        map.put("code",200);
-        map.put("user",user);
-        return CommonResult.success(map);
     }
 }
