@@ -1,6 +1,7 @@
 package com.icodeview.rock.admin.security;
 
 import com.icodeview.rock.security.JwtAuthenticationTokenFilter;
+import com.icodeview.rock.security.PermitAllProcessor;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -38,6 +39,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private AccessDeniedHandler accessDeniedHandler;
     @Resource
     private AuthenticationEntryPoint authenticationEntryPoint;
+    @Resource
+    private PermitAllProcessor permitAllProcessor;
 
 
     @Bean(name = BeanIds.AUTHENTICATION_MANAGER)
@@ -67,7 +70,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .exceptionHandling().accessDeniedHandler(accessDeniedHandler).authenticationEntryPoint(authenticationEntryPoint)
                 .and()
                 .authorizeRequests(authorize->{
-                    authorize.antMatchers("/login/account").permitAll();
+                    authorize.antMatchers(permitAllProcessor.process()).permitAll();
                 })
                 .authorizeRequests(authorize->{
                     authorize.anyRequest().access("@rbacService.hasPermission(request,authentication)");
